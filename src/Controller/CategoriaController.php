@@ -50,7 +50,7 @@ class CategoriaController extends AbstractController{
         $data['titulo'] = "Adicionar uma nova categoria";
         $data['form'] = $form;
 
-        return $this->renderForm('categoria/form.html.twig', $data);
+        return $this->render('categoria/form.html.twig', $data);
 
     }
 

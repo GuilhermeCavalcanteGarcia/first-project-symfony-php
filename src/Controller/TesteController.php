@@ -9,11 +9,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class TesteController extends AbstractController{
 
     /**
-     *@Route("/rota")
+     *@Route("/teste")
      */
     public function index() : Response{
 
-        return new Response("<h1> Página de teste ! <h1>");
+        $data['titulo'] = "Testando";
+        $data['paragrafo'] = "Um parágrafo para testar a passagem de valores!";
+        $data['frutas'] = [['nome'=>'Banana', 'valor' => 5.30],['nome'=>'Melão', 'valor' => 400],['nome'=>'Abacate', 'valor' => 600]];
+        return $this->render('teste/index.html.twig', $data);
 
     }
     /**
