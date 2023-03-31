@@ -3,6 +3,10 @@
 {% block body %}
 <h1>{{titulo}}</h1>
 
+<a href="{{ path('produto_index') }}" class="btn btn-primary mb-4 mt-4">Produtos Cadastrados</a>
+
 {{ form(form) }}
+
+<p>{{mensagem}}</p>
 
 {% endblock %}

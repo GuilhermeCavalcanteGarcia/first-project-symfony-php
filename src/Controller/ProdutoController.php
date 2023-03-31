@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Produto;
 use App\Form\ProdutoType;
-use App\Repository\CategoriaRepository;
+use App\Repository\ProdutoRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,48 +16,94 @@ class ProdutoController extends AbstractController{
     /**
      * @Route("/produto", name="produto_index")
      */
-    public function index(EntityManagerInterface $entityManager, CategoriaRepository $categoriaRepository) : Response
+    public function index(EntityManagerInterface $entityManager, ProdutoRepository $produtoRepository) : Response
     {
-        $categoria = $categoriaRepository->find(1); //1 = Categoria Informática que já foi cadastrada no Banco de Dados
-        $produto = new Produto();
-        $produto->setNomeproduto("Notebook");
-        $produto->setValor(7800);
-        $produto->setCategoria($categoria);
+        // Buscando no Banco de Dados todos os produtos cadastrados e armazenando na variável $data
 
-        $msg = "";
+        $data['produtos'] = $produtoRepository->findAll();
+        $data['titulo'] = "Produtos Cadastrados";
+        $data['mensagem'] = 'Informações';
 
-        try{
+        
 
-            $entityManager->persist($produto); //Salvar a persistência em nível de memória 
-            $entityManager->flush(); //Execuita em definitivo no banco de dados
-            $msg = "Produto cadastrado com sucesso!";
+        return $this->render('produto/index.html.twig', $data);
 
-        }
-        catch(Exception $entitiyManager){
 
-            $msg = "Erro ao cadastrar produto";
-
-        }
-
-        return new Response("<h1>".$msg."</h1>");
     }
 
     /**
-     * @Route("/produto/adicionar")
+     * @Route("/produto/adicionar", name="produto_adicionar")
      */
-    public function adicionar(){
+    public function adicionar(Request $request, EntityManagerInterface $entityManager){
 
-        $form = $this->createForm(ProdutoType::class);
+        $msg = "";
+
+        $produto = new Produto();
+
+        $form = $this->createForm(ProdutoType::class, $produto);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            // Salvar o novo produto no meu Banco de Dados
+
+            $entityManager->persist($produto);//Salva na memória
+
+            $entityManager->flush();//Salva definitivamente no Banco de Dados
+
+            $msg = "Produto cadastrado com sucesso!";
+
+        }
 
         $data['titulo'] = "Adicionar novo produto";
         $data['form'] = $form;
+        $data['mensagem'] = $msg;
 
         return $this->render('produto/form.html.twig', $data);
 
     }
+    /**
+     * @Route("/produto/editar/{id}", name="produto_editar")
+     */
+    public function editar($id, Request $request, EntityManagerInterface $entityManager, ProdutoRepository $produtoRepository){
 
+        $msg = '';
+
+        $produto = $produtoRepository->find($id);
+
+        $form = $this->createForm(ProdutoType::class, $produto);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $entityManager->flush();// Faz o UPDATE DA CATEGORIA NO BANCO DE DADOS
+            $msg = 'Produto editado com sucesso!';
+
+        }
+        
+        $data['titulo'] = "Editar produto";
+        $data['form'] = $form;
+        $data['mensagem'] = $msg;
+
+        return $this->render('produto/form.html.twig', $data);
+
+    }
+    /**
+     * @Route("/produto/excluir/{id}", name="produto_excluir")
+     */
+    public function excluir($id, EntityManagerInterface $entityManager, ProdutoRepository $produtoRepository){
+
+        
+        $produto = $produtoRepository->find($id);
+        $entityManager->remove($produto);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('produto_index');
+
+
+    }
 
 }
-
 
 ?>
