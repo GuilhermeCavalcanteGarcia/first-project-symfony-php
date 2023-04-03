@@ -16,18 +16,15 @@ class ProdutoController extends AbstractController{
     /**
      * @Route("/produto", name="produto_index")
      */
-    public function index(EntityManagerInterface $entityManager, ProdutoRepository $produtoRepository) : Response
+    public function index(ProdutoRepository $produtoRepository) : Response
     {
         // Buscando no Banco de Dados todos os produtos cadastrados e armazenando na variável $data
-
+        
         $data['produtos'] = $produtoRepository->findAll();
         $data['titulo'] = "Produtos Cadastrados";
         $data['mensagem'] = 'Informações';
 
-        
-
         return $this->render('produto/index.html.twig', $data);
-
 
     }
 
@@ -88,7 +85,6 @@ class ProdutoController extends AbstractController{
         return $this->render('produto/form.html.twig', $data);
 
     }
-    
     /**
      * @Route("/produto/excluir/{id}", name="produto_excluir")
      */

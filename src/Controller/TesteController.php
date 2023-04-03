@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\UsuarioRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,11 +13,14 @@ class TesteController extends AbstractController{
     /**
      *@Route("/teste")
      */
-    public function index() : Response{
+    public function index(EntityManagerInterface $entityManager, UsuarioRepository $usuarioRepository) : Response{
 
-        $data['titulo'] = "Testando";
-        $data['paragrafo'] = "Um parágrafo para testar a passagem de valores!";
-        $data['frutas'] = [['nome'=>'Banana', 'valor' => 5.30],['nome'=>'Melão', 'valor' => 400],['nome'=>'Abacate', 'valor' => 600]];
+        
+
+        $data['usuarios'] = $usuarioRepository->findAll();
+        $data['paragrafo'] = "Lista de Usuários";
+        $data['titulo'] = 'Usuários';
+
         return $this->render('teste/index.html.twig', $data);
 
     }
