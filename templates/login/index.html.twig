@@ -11,7 +11,7 @@
                 <div>{{ erro.messageKey|trans(erro.messageData, 'security') }}</div>
             {% endif %}
 
-            <form action="{{ path('login_index') }}" method="POST">
+            <form action="{{ path('login_index') }}" method="post">
 
                 <input type="hidden" name="_target_path" value="/produto"/>
 
@@ -21,7 +21,7 @@
                 <label for="password" class="form-label mt-4">Senha</label>
                 <input type="password" class="form-control" id="password" name="_password"/>
                 
-                <button type="submit" class="btn btn-primary">Entrar</button>
+                <button type="submit" class="btn btn-primary p-3 mt-4">Entrar</button>
                 
             </form>
         </div>

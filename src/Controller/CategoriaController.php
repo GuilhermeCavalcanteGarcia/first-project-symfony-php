@@ -11,31 +11,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class CategoriaController extends AbstractController{
 
     /**
      * @Route("/categoria", name="categoria_index")
+     * @IsGranted("ROLE_USER")
      */
     public function index(CategoriaRepository $categoriaRepository) : Response 
     {   
-
+        // Restringir acesso a esta págin apenas para usuários ROLE_USER
+        // $this->denyAccessUnlessGranted('ROLE_USER');
+      
+    
         // Buscar no banco de dados todas as categorias cadastradas
-
         $data['categorias'] = $categoriaRepository->findAll();
         $data['titulo'] = 'Categorias cadastradas';
         $data['mensagem'] = 'Informações';
-
-        
        
         return $this->render('categoria/index.html.twig', $data);
-
-
 
     }
 
     /**
      * @Route("/categoria/adicionar", name="categoria_adicionar")
+     * IsGranted("ROLE_USER")
      */
     public function adicionar(Request $request, EntityManagerInterface $entityManager){
         
@@ -66,6 +68,7 @@ class CategoriaController extends AbstractController{
 
     /**
      * @Route("/categoria/editar/{id}", name="categoria_editar")
+     * IsGranted("ROLE_USER")
      */
     public function editar($id, Request $request, EntityManagerInterface $entityManager, CategoriaRepository $categoriaRepository){
 
@@ -90,6 +93,7 @@ class CategoriaController extends AbstractController{
 
     /**
      * @Route("/categoria/excluir/{id}", name="categoria_excluir")
+     * IsGranted("ROLE_USER")
      */
     public function excluir($id, EntityManagerInterface $entityManager, CategoriaRepository $categoriaRepository){
 

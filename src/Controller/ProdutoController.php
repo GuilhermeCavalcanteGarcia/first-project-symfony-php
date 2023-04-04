@@ -10,17 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ProdutoController extends AbstractController{
 
     /**
      * @Route("/produto", name="produto_index")
+     * @IsGranted("ROLE_USER")
      */
-    public function index(ProdutoRepository $produtoRepository) : Response
+    public function index(Request $request, ProdutoRepository $produtoRepository) : Response
     {
         // Buscando no Banco de Dados todos os produtos cadastrados e armazenando na variável $data
         
-        $data['produtos'] = $produtoRepository->findAll();
+        $nomeproduto = $request->query->get('nome');
+
+        // Buscando produtos cadastrados
+        $data['produtos'] = is_null($nomeproduto) ? $produtoRepository
+        ->findAll() : $produtoRepository
+        ->findProdutoByLikeNome($nomeproduto);
+
+        $data['nomeproduto'] = $nomeproduto;
         $data['titulo'] = "Produtos Cadastrados";
         $data['mensagem'] = 'Informações';
 
@@ -30,6 +39,7 @@ class ProdutoController extends AbstractController{
 
     /**
      * @Route("/produto/adicionar", name="produto_adicionar")
+     * @IsGranted("ROLE_USER")
      */
     public function adicionar(Request $request, EntityManagerInterface $entityManager){
 
@@ -61,6 +71,7 @@ class ProdutoController extends AbstractController{
     }
     /**
      * @Route("/produto/editar/{id}", name="produto_editar")
+     * @IsGranted("ROLE_USER")
      */
     public function editar($id, Request $request, EntityManagerInterface $entityManager, ProdutoRepository $produtoRepository){
 
@@ -87,6 +98,7 @@ class ProdutoController extends AbstractController{
     }
     /**
      * @Route("/produto/excluir/{id}", name="produto_excluir")
+     * @IsGranted("ROLE_USER")
      */
     public function excluir($id, EntityManagerInterface $entityManager, ProdutoRepository $produtoRepository){
 

@@ -38,6 +38,14 @@ class ProdutoRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findProdutoByLikeNome($nomeproduto){
+
+        return $this->createQueryBuilder('p')->where('p.nomeproduto LIKE :nomeproduto')
+                    ->setParameter('nomeproduto', "%$nomeproduto%")->getQuery()->getResult();
+
+
+    }
     
 
 //    /**

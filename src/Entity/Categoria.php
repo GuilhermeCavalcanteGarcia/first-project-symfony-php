@@ -6,6 +6,7 @@ use App\Repository\CategoriaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -15,6 +16,7 @@ class Categoria
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("api_list")]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -25,6 +27,7 @@ class Categoria
         minMessage : 'Descrição deve possuir mais de 3 caracteres',
         maxMessage : 'Descrição deve possuir no máximo 80 caracteres',
     )]
+    #[Groups("api_list")]
     private ?string $descricaocategoria = null;
 
     #[ORM\OneToMany(mappedBy: 'categoria', targetEntity: Produto::class)]
